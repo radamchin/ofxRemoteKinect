@@ -5,8 +5,9 @@
 
 class ofxRemoteKinectClient {
 public:
-	ofxRemoteKinectClient();
-	
+	ofxRemoteKinectClient(int kinectWidth = 640, int kinectHeight = 480);
+	~ofxRemoteKinectClient();
+    
 	void setup();
 	void update();
 	void draw();
@@ -25,14 +26,36 @@ public:
 	int getQuality() { return quality; }
 	
 	unsigned char* getPixels() { return getPixelsRef().getPixels(); }
-	unsigned char* getDepthPixels() { return getDepthPixelsRef().getPixels(); }
+	unsigned short* getDepthPixels() { return getDepthPixelsRef().getPixels(); }
+    
+    // Thread-safe version
+    unsigned short* getDepthImagePixels() { return depthImage.getPixels(); }
 
 	ofPixels& getPixelsRef();
-	ofPixels& getDepthPixelsRef();
+	ofShortPixels& getDepthPixelsRef();
+    ofShortPixels& getDepthImagePixelsRef();
 	
-	ofTexture& getTextureReference() { return texture; }
-	ofTexture& getDepthTextureReference() { return depthTexture; }
-	
+	//ofTexture& getTextureReference() { return texture; }
+	//ofTexture& getDepthTextureReference() { return depthTexture; }
+
+    int framesSinceLastRequest;
+
+    ofMutex *lock;
+    ofMutex *resizeLock;
+    
+    
+    string getPublisher() { return publisher; }
+    string getResponder() { return responder; }
+    
+    bool connected() { return ping.connected(); }
+    
+    bool running = false;
+    bool image_set = false;
+    
+    void stop();
+    
+    int depthFrameRecievedCount = 0;
+    
 private:
 	string publisher;
 	string responder;
@@ -45,12 +68,18 @@ private:
 	ofxZmqRequest requester;
 	ofxZmqRequest ping;
 	
-	ofTexture texture;
-	ofTexture depthTexture;
+	//ofTexture texture;
+	//ofTexture depthTexture;
 	
 	ofPixels pixels;
-	ofPixels depthPixels;
+	ofShortPixels depthPixels;
+    
+    // Added for thread-safe version
+    ofShortImage depthImage;
 	
+    
 	bool pixelsIsDirty;
 	bool depthPixelsIsDirty;
+    
+    bool frame_parsing = false;
 };

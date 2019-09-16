@@ -116,10 +116,26 @@ void ofxRemoteKinectProtocol::parseFrame(const string& data, ofTexture* texture)
 	int headerSize = sizeof(kVideoFrame) - 1 + sizeof(kDelimiter) - 1;
 	int dataSize = data.size() - headerSize;
 	ofBuffer buffer(&data[headerSize], dataSize);
-	ofImage image;
-	bool rc = image.loadImage(buffer);
-	if (data[0] == kVideoFrame[0])
-		texture->loadData(image.getPixels(), 640, 480, GL_RGB);
-	else
-		texture->loadData(image.getPixels(), 640, 480, GL_LUMINANCE);
+	
+	if (data[0] == kVideoFrame[0]){
+        ofImage image;
+        bool rc = image.loadImage(buffer);
+        texture->loadData(image.getPixels(), 640, 480, GL_RGB);
+	
+    }else{
+        ofShortImage image;
+        bool rc = image.loadImage(buffer);
+        texture->loadData(image.getPixelsRef());
+    }
+}
+
+void ofxRemoteKinectProtocol::parseFrame(const string& data, ofShortImage* image) {
+	
+    assert(sizeof(kVideoFrame) == sizeof(kDepthFrame));
+	int headerSize = sizeof(kVideoFrame) - 1 + sizeof(kDelimiter) - 1;
+	int dataSize = data.size() - headerSize;
+	ofBuffer buffer(&data[headerSize], dataSize);
+    bool rc = image->loadImage(buffer);
+
+
 }

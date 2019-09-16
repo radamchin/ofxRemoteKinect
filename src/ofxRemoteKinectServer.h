@@ -9,8 +9,9 @@ public:
 	ofxRemoteKinectServer();
 	~ofxRemoteKinectServer();
 	
-	void setup();
+	bool setup(bool sendRGB, bool sendData, int _kinectWidth=640, int _kinectHeight = 480);
 	void update();
+    void debugDraw(float x = 0, float y = 0, float sx = 1.0, float sy=1.0);
 	void draw();
 	
 	void setPorts(int publisher, int responder);  // Should be called before calling setup().
@@ -23,6 +24,15 @@ public:
 	float getTiltAngle() { return tiltAngle; }
 	int getQuality() { return quality; }
 	
+    
+    int getPublisherPort() { return publisherPort; }
+    int getResponderPort() { return responderPort; }
+    
+    int kinectWidth;
+    int kinectHeight;
+    
+    bool running = false;
+    
 private:
 	int publisherPort;
 	int responderPort;
@@ -37,4 +47,7 @@ private:
 	
 	bool subscribed;
 	int activeTimer;
+    
+    bool rgbEnabled;
+    bool dataEnabled;
 };

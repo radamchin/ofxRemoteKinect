@@ -31,4 +31,5 @@ public:
 	
 	static void parse(const string& data, type* type, float* f1, float* f2, int* i1);
 	static void parseFrame(const string& data, ofTexture* texture);
+    static void parseFrame(const string& data, ofShortImage* texture);
 };
