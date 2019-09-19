@@ -18,7 +18,7 @@ ofxRemoteKinectClient::ofxRemoteKinectClient(int kinectWidth, int kinectHeight):
     
     depthImage.setUseTexture(false);
     depthImage.allocate(kinectWidth,kinectHeight,OF_IMAGE_GRAYSCALE);
-    depthImage.getPixelsRef().set(0);
+    depthImage.getPixels().set(0);
     image_set = false;
 
 }
@@ -149,27 +149,27 @@ void ofxRemoteKinectClient::setQuality(int newQuality) {
 }
 
 ////--------------------------------------------------------------
-//ofPixels& ofxRemoteKinectClient::getPixelsRef() {
+ofPixels& ofxRemoteKinectClient::getPixels() {
 //	if (pixelsIsDirty) {
 //		texture.readToPixels(pixels);
 //		pixelsIsDirty = false;
 //	}
-//	return pixels;
-//}
-
-//--------------------------------------------------------------
-ofShortPixels& ofxRemoteKinectClient::getDepthImagePixelsRef() {
-	return depthImage.getPixelsRef();
+	return pixels;
 }
 
 //--------------------------------------------------------------
-//ofShortPixels& ofxRemoteKinectClient::getDepthPixelsRef() {
+ofShortPixels& ofxRemoteKinectClient::getDepthImagePixels() {
+	return depthImage.getPixels();
+}
+
+//--------------------------------------------------------------
+ofShortPixels& ofxRemoteKinectClient::getDepthPixels() {
 //	if (depthPixelsIsDirty) {
 //		depthTexture.readToPixels(depthPixels);
 //		depthPixelsIsDirty = false;
 //	}
-//	return depthPixels;
-//}
+	return depthPixels;
+}
 
 //--------------------------------------------------------------
 void ofxRemoteKinectClient::stop() {
@@ -190,7 +190,7 @@ void ofxRemoteKinectClient::stop() {
     }
     */
     
-    depthImage.getPixelsRef().set(0);
+    depthImage.getPixels().set(0);
     //Need to clean up the zmq shit better as getting a too many files open, os forced app exit on this
     //ERR is in zmq src/signaler.cpp
     //subscriber.

@@ -119,13 +119,14 @@ void ofxRemoteKinectProtocol::parseFrame(const string& data, ofTexture* texture)
 	
 	if (data[0] == kVideoFrame[0]){
         ofImage image;
-        bool rc = image.loadImage(buffer);
-        texture->loadData(image.getPixels(), 640, 480, GL_RGB);
-	
+        bool rc = image.load(buffer);
+        // texture->loadData(image.getPixels(), 640, 480, GL_RGB);
+        texture->loadData(image.getPixels(), GL_RGB);
+        
     }else{
         ofShortImage image;
-        bool rc = image.loadImage(buffer);
-        texture->loadData(image.getPixelsRef());
+        bool rc = image.load(buffer);
+        texture->loadData(image.getPixels());
     }
 }
 

@@ -25,18 +25,21 @@ public:
 	float getTiltAngle() { return tiltAngle; }
 	int getQuality() { return quality; }
 	
-	unsigned char* getPixels() { return getPixelsRef().getPixels(); }
-	unsigned short* getDepthPixels() { return getDepthPixelsRef().getPixels(); }
+	unsigned char* getPixelsData() { return getPixels().getData(); }
+    unsigned short* getDepthPixelsData() { return getDepthPixels().getData(); }
+    //ofPixels& getPixels() { return getPixelsRef();  };
+    //ofShortPixels& getDepthPixels() { return getDepthPixelsRef(); };
     
     // Thread-safe version
-    unsigned short* getDepthImagePixels() { return depthImage.getPixels(); }
-
-	ofPixels& getPixelsRef();
-	ofShortPixels& getDepthPixelsRef();
-    ofShortPixels& getDepthImagePixelsRef();
+    unsigned short* getDepthImagePixelsData() { return depthImage.getPixels().getData(); }
+    // ofPixels getDepthImagePixels() { return depthImage.getPixels(); }
+    
+	ofPixels& getPixels();
+	ofShortPixels& getDepthPixels();
+    ofShortPixels& getDepthImagePixels();
 	
-	//ofTexture& getTextureReference() { return texture; }
-	//ofTexture& getDepthTextureReference() { return depthTexture; }
+	//ofTexture& getTexture() { return texture; }
+	//ofTexture& getDepthTexture() { return depthTexture; }
 
     int framesSinceLastRequest;
 

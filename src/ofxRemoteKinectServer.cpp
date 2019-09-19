@@ -148,12 +148,12 @@ void ofxRemoteKinectServer::debugDraw(float x, float y, float sx, float sy) {
     
     
 	if(rgbEnabled) {
-        kinect.getTextureReference().draw(-1*640, 0.0);
+        kinect.getTexture().draw(-1*640, 0.0);
     }else if(dataEnabled) {
         //TODO: draw the IR image here.
     }
     
-	if(dataEnabled) kinect.getDepthTextureReference().draw((rgbEnabled ? -2 : -1)*640.0, 0.0);
+	if(dataEnabled) kinect.getDepthTexture().draw((rgbEnabled ? -2 : -1)*640.0, 0.0);
 
     ofPopMatrix();
 }
@@ -177,12 +177,12 @@ void ofxRemoteKinectServer::draw() {
         
         ofImageQualityType qualityType = static_cast<ofImageQualityType>(quality);
         ofBuffer videoBuffer;
-        ofSaveImage(kinect.getPixelsRef(), videoBuffer, OF_IMAGE_FORMAT_JPEG, qualityType);
+        ofSaveImage(kinect.getPixels(), videoBuffer, OF_IMAGE_FORMAT_JPEG, qualityType);
         ofxRemoteKinectProtocol::buildVideoFrame(&data, videoBuffer);
         publisher.send(data, true);
     
         ofImage videoImage;
-        videoImage.loadImage(videoBuffer);
+        videoImage.load(videoBuffer);
         videoImage.draw(0.0, 480);
         
     }
@@ -190,7 +190,6 @@ void ofxRemoteKinectServer::draw() {
     if(dataEnabled){
         
         ofBuffer depthBuffer;
-        
         
         if(kinectWidth != 640 || kinectHeight != 480 ){
         
@@ -200,19 +199,16 @@ void ofxRemoteKinectServer::draw() {
             int i = 0;
             for(int y = 0; y < 480; y+=2){
                 for(int x = 0; x < 640; x+=2){
-                
-                    resizedImage.getPixelsRef()[i] = kinect.getRawDepthPixels()[y*640+x];
-                    
+                    resizedImage.getPixels()[i] = kinect.getRawDepthPixels()[y*640+x];
                     i++;
-
                 }
             }
 
-            ofSaveImage(resizedImage.getPixelsRef(), depthBuffer, OF_IMAGE_FORMAT_TIFF, OF_IMAGE_QUALITY_LOW);
+            ofSaveImage(resizedImage.getPixels(), depthBuffer, OF_IMAGE_FORMAT_TIFF, OF_IMAGE_QUALITY_LOW);
         
         }else{
             
-            ofSaveImage(kinect.getRawDepthPixelsRef(), depthBuffer, OF_IMAGE_FORMAT_TIFF, OF_IMAGE_QUALITY_LOW);
+            ofSaveImage(kinect.getRawDepthPixels(), depthBuffer, OF_IMAGE_FORMAT_TIFF, OF_IMAGE_QUALITY_LOW);
             
         }
         
