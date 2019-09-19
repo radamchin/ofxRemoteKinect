@@ -4,9 +4,9 @@
 #include "ofxControlPanel.h"
 #include "ofxRemoteKinect.h"
 
-class testApp : public ofBaseApp {
+class ofApp : public ofBaseApp {
 public:
-	testApp(const string& publisher, const string& responder);
+	ofApp(const string& publisher, const string& responder);
 	
 	void setup();
 	void update();
@@ -24,6 +24,8 @@ public:
 	
 private:
 	void draw3d();
+    
+    ofImage display_img;
 	
 	ofxControlPanel gui;
 	ofxRemoteKinectClient client;

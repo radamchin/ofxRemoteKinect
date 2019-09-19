@@ -1,4 +1,4 @@
-#include "testApp.h"
+#include "ofApp.h"
 
 #include <sstream>
 
@@ -8,7 +8,7 @@ static const char kTiltAngle[] = "rk_ta";
 static const char kQuality[]   = "rk_qu";
 
 //--------------------------------------------------------------
-testApp::testApp(const string& publisher, const string& responder) : publisher(publisher), responder(responder) {
+ofApp::ofApp(const string& publisher, const string& responder) : publisher(publisher), responder(responder) {
 	nearClip  = client.getNearClip();
 	farClip   = client.getFarClip();
 	tiltAngle = client.getTiltAngle();
@@ -18,7 +18,7 @@ testApp::testApp(const string& publisher, const string& responder) : publisher(p
 }
 
 //--------------------------------------------------------------
-void testApp::setup() {
+void ofApp::setup() {
 	ofSetFrameRate(60);
 	ofEnableSmoothing();
 	ofBackground(0, 0, 0);
@@ -60,7 +60,7 @@ void testApp::setup() {
 }
 
 //--------------------------------------------------------------
-void testApp::update() {
+void ofApp::update() {
 	gui.update();
 	
 	// Reflect settings from GUI to ofxRemoteKinect.
@@ -92,16 +92,20 @@ void testApp::update() {
 }
 
 //--------------------------------------------------------------
-void testApp::draw() {
+void ofApp::draw() {
 	switch (mode) {
 		case 0:
 			draw3d();
 			break;
 		case 1:
-			client.getTextureReference().draw(0.0, 0.0);
+            display_img = ofImage(client.getPixels());
+            display_img.draw(0,0);
+			//client.getTexture().draw(0.0, 0.0);
 			break;
 		default:
-			client.getDepthTextureReference().draw(0.0, 0.0);
+            display_img = ofImage(client.getDepthPixels());
+            display_img.draw(0,0);
+			//client.getDepthTexture().draw(0.0, 0.0);
 			break;
 	}
 	
@@ -114,65 +118,65 @@ void testApp::draw() {
 }
 
 //--------------------------------------------------------------
-void testApp::keyPressed(int key) {
+void ofApp::keyPressed(int key) {
 	if (key == OF_KEY_RETURN)
 		mode = (mode + 1) % 3;
 }
 
 //--------------------------------------------------------------
-void testApp::keyReleased(int key) {
+void ofApp::keyReleased(int key) {
 }
 
 //--------------------------------------------------------------
-void testApp::mouseMoved(int x, int y ) {
+void ofApp::mouseMoved(int x, int y ) {
 }
 
 //--------------------------------------------------------------
-void testApp::mouseDragged(int x, int y, int button) {
+void ofApp::mouseDragged(int x, int y, int button) {
 	gui.mouseDragged(x, y, button);
 }
 
 //--------------------------------------------------------------
-void testApp::mousePressed(int x, int y, int button) {
+void ofApp::mousePressed(int x, int y, int button) {
 	gui.mousePressed(x, y, button);
 }
 
 //--------------------------------------------------------------
-void testApp::mouseReleased(int x, int y, int button){
+void ofApp::mouseReleased(int x, int y, int button){
 	gui.mouseReleased();
 }
 
 //--------------------------------------------------------------
-void testApp::windowResized(int w, int h) {
+void ofApp::windowResized(int w, int h) {
 }
 
 //--------------------------------------------------------------
-void testApp::gotMessage(ofMessage msg) {
+void ofApp::gotMessage(ofMessage msg) {
 }
 
 //--------------------------------------------------------------
-void testApp::dragEvent(ofDragInfo dragInfo) {
+void ofApp::dragEvent(ofDragInfo dragInfo) {
 }
 
 //--------------------------------------------------------------
-void testApp::draw3d() {
+void ofApp::draw3d() {
 	ofPushMatrix();
 
 	rotate += ofVec3f(1.0, 2.0, 3.0);
 	ofTranslate(320, 240);
-	ofRotateX(rotate.x);
-	ofRotateY(rotate.y);
-	ofRotateZ(rotate.z);
+	ofRotateXRad(rotate.x);
+	ofRotateYRad(rotate.y);
+	ofRotateZRad(rotate.z);
 	ofTranslate(-320, -240);
 	
-	ofPixels pixels = client.getPixelsRef();
-	ofPixels depthPixels = client.getDepthPixelsRef();
+	ofPixels & pixels = client.getPixels();
+	ofShortPixels & depthPixels = client.getDepthPixels();
 	
 	for (int x = 0; x < 640; x += 4) {
 		for (int y = 0; y < 480; y += 4) {
-			float z = (depthPixels.getColor(x, y).getBrightness() - 127) / 2.0;
+            float z = (depthPixels.getColor(x, y).getBrightness() - 127) / 2.0;
 			ofSetColor(pixels.getColor(x, y));
-			ofCircle(x, y, z, 2);
+			ofDrawCircle(x, y, z, 2);
 		}
 	}
 	

@@ -1,10 +1,9 @@
 #include "ofMain.h"
-#include "testApp.h"
-#include "ofAppGlutWindow.h"
+#include "ofApp.h"
 
 //========================================================================
 int main( ){
-	ofAppGlutWindow window;
-	ofSetupOpenGL(&window, 640, 480, OF_WINDOW);
-	ofRunApp(new testApp("tcp://localhost:8989", "tcp://localhost:8990"));
+	//ofAppGlutWindow window;
+	//ofSetupOpenGL(&window, 640, 480, OF_WINDOW);
+	ofRunApp(new ofApp("tcp://localhost:8989", "tcp://localhost:8990"));
 }
